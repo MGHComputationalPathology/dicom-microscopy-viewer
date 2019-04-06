@@ -5,8 +5,6 @@
 const _coordinates = Symbol('coordinates')
 const _majorAxisEndpointCoordinates = Symbol('majorAxisEndpointCoordinates')
 const _minorAxisEndpointCoordinates = Symbol('minorAxisEndpointCoordinates')
-const _centerCoordinates = Symbol('centerCoordinates')
-const _radius = Symbol('radius')
 
 class Scoord3D {
 

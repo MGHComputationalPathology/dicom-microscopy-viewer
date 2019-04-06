@@ -31,8 +31,8 @@
     </noscript>
 
     <script src="https://unpkg.com/dicomweb-client"></script>
-    <script src="https://unpkg.com/dicom-microscopy-viewer"></script>
-    <!-- <script src="../../build/dicom-microscopy-viewer.js"></script> -->
+    <!-- <script src="https://unpkg.com/dicom-microscopy-viewer"></script> -->
+    <script src="../../build/dicom-microscopy-viewer.js"></script>
     <script>
 
       const CORE_ACTIONS = {
@@ -218,7 +218,23 @@
         })
         .then(metadata => {
           metadata = metadata.filter(m => m);
-          const viewer = new DICOMMicroscopyViewer.api.VLWholeSlideMicroscopyImageViewer({client,metadata});
+
+          const styleOptions = {
+            stroke : {
+              color: 'blue', 
+              width: 3
+            },
+            fill : {
+              color: 'rgba(0, 0, 255, 0.1)'
+            },
+            circle : {
+              radius: 5,
+              color: 'green'
+            }
+          }
+
+          const style = new DICOMMicroscopyViewer.style.ToolStyle(styleOptions)
+          const viewer = new DICOMMicroscopyViewer.api.VLWholeSlideMicroscopyImageViewer({client, metadata, style});
 
           const container = document.getElementById("dicomImage");
           viewer.render({ container });

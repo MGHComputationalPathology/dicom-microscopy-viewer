@@ -11,6 +11,7 @@ import ScaleLine from 'ol/control/ScaleLine';
 import Draw, {createRegularPolygon, createBox} from 'ol/interaction/Draw';
 import Select from 'ol/interaction/Select';
 import Modify from 'ol/interaction/Modify';
+import MultiPoint from 'ol/geom/MultiPoint.js';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Collection from 'ol/Collection';
@@ -511,6 +512,12 @@ class VLWholeSlideMicroscopyImageViewer {
       projection: projection
     });
 
+    let styles;
+
+    if('style' in options){
+      styles = [options.style.getStyle()]
+    }
+
     this[_drawingSource] = new VectorSource({
       tileGrid: tileGrid,
       projection: projection,
@@ -521,6 +528,7 @@ class VLWholeSlideMicroscopyImageViewer {
     this[_drawingLayer] = new VectorLayer({
       extent: extent,
       source: this[_drawingSource],
+      style: styles,
       projection: projection,
       updateWhileAnimating: true,
       updateWhileInteracting: true,
@@ -701,11 +709,14 @@ class VLWholeSlideMicroscopyImageViewer {
 
     const defaultDrawOptions = {source: this[_drawingSource]};
     const customDrawOptions = customOptionsMapping[options.geometryType];
-    if ('style' in options) {
-      customDrawOptions.style = options.style;
-    }
     const allDrawOptions = Object.assign(defaultDrawOptions, customDrawOptions);
     this[_interactions].draw = new Draw(allDrawOptions);
+    
+    if ('style' in options) {
+      this[_interactions].draw.on('drawstart',function(event){
+        event.feature.setStyle(options.style.getStyle());    
+      });
+    }
 
     const container = this[_map].getTargetElement();
 

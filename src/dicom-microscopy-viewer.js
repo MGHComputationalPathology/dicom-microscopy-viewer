@@ -1,5 +1,6 @@
 import { VLWholeSlideMicroscopyImageViewer } from './api.js';
 import { ROI } from './roi.js';
+import { ToolStyle } from './style.js'
 import {
   Point,
   Multipoint,
@@ -24,4 +25,8 @@ let roi = {
   ROI,
 }
 
-export { api, scoord3d, roi };
+let style = {
+  ToolStyle
+}
+
+export { api, scoord3d, roi, style };
