@@ -41,8 +41,8 @@
     "rollup-plugin-postcss": "^2.9.0"
   },
   "dependencies": {
-    "dicomweb-client": "^0.5.2",
-    "mathjs": "^7.1.0",
-    "ol": "^6.3.1"
+    "dicomweb-client": "^0.6.0",
+    "mathjs": "^9.2.0",
+    "ol": "^6.5.0"
   }
 }

@@ -24,6 +24,7 @@ import TileGrid from 'ol/tilegrid/TileGrid';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import View from 'ol/View';
+import { TileDebug } from 'ol/source';
 import { default as PolygonGeometry } from 'ol/geom/Polygon';
 import { default as PointGeometry } from 'ol/geom/Point';
 import { default as LineStringGeometry } from 'ol/geom/LineString';
@@ -413,6 +414,7 @@ class VolumeImageViewer {
    * @param {boolean} [options.retrieveRendered=true] - Whether image frames should be retrieved via DICOMweb prerendered by the server.
    * @param {boolean} [options.includeIccProfile=false] - Whether ICC Profile should be included for correction of image colors.
    * @param {boolean} [options.useWebGL=true] - Whether WebGL renderer should be used.
+   * @param {boolean} [options.debug=false] - Whether debug tiles should be displayed.
    */
   constructor(options) {
     if ('useWebGL' in options) {
@@ -430,6 +432,13 @@ class VolumeImageViewer {
       options.controls = [];
     }
     options.controls = new Set(options.controls);
+
+    if (options.debug !== undefined) {
+      options.debug = true;
+    }
+    else {
+      options.debug = false;
+    }
 
     // Collection of Openlayers "VectorLayer" instances indexable by
     // DICOM Series Instance UID
@@ -670,7 +679,7 @@ class VolumeImageViewer {
 
     /** Frames may extend beyond the size of the total pixel matrix.
      * The excess pixels are empty, i.e. have only a padding value.
-     * We set the extent to the size of the actual image without taken
+     * We set the extent to the size of the actual image without taking
      * excess pixels into account.
      * Note that the vertical axis is flipped in the used tile source,
      * i.e. values on the axis lie in the range [-n, -1], where n is the
@@ -804,11 +813,23 @@ class VolumeImageViewer {
 
     /** Creates the map with the defined layers and view and renders it. */
     this[_map] = new Map({
-      layers: [this[_imageLayer], this[_drawingLayer]],
+      layers: [
+        this[_imageLayer],
+        this[_drawingLayer],
+      ],
       view: view,
       controls: [],
       keyboardEventTarget: document,
     });
+    if (options.debug) {
+      const debugLayer = new TileLayer({
+        source: new TileDebug({
+          tileGrid: tileGrid,
+          projection: projection,
+        })
+      });
+      this[_map].addLayer(debugLayer);
+    }
 
     this[_map].addInteraction(new MouseWheelZoom());
 
@@ -1336,7 +1357,7 @@ class _NonVolumeImageViewer {
     });
 
     this[_imageLayer] = new ImageLayer({
-      source: rasterSource,
+      source: rasterSource
     });
 
     // The default rotation is 'horizontal' with the slide label on the right
